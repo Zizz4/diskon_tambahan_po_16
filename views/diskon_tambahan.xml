@@ -6,12 +6,22 @@
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field name="arch" type="xml">
-                <field name="tax_totals" position="before">
-                    <div class="o_td_label" name="diskon_tambahan">
-                        <label class="o_form_label" for="diskon_tambahan"/>
-                        <field name="diskon_tambahan" attrs="{'readonly': [('state', 'not in', 'draft')]}" widget="monetary" class="oe_right" nolabel="1"/>
-                    </div>
-                </field>
+                <xpath expr="//page[@name='products']/group/group[1]" position="after">
+                    <group class="oe_right">
+                        <div class="o_td_label" name="diskon_tambahan">
+                            <label class="o_form_label" for="diskon_tambahan"/>
+                            <field name="diskon_tambahan" attrs="{'readonly': [('state', 'not in', 'draft')]}"
+                                   widget="monetary" class="oe_right" nolabel="1"/>
+                        </div>
+                    </group>
+                </xpath>
+<!--                <field name="tax_totals" position="before">-->
+<!--                    <div class="o_td_label" name="diskon_tambahan">-->
+<!--                        <label class="o_form_label" for="diskon_tambahan"/>-->
+<!--                        <field name="diskon_tambahan" attrs="{'readonly': [('state', 'not in', 'draft')]}"-->
+<!--                               widget="monetary" class="oe_right" nolabel="1"/>-->
+<!--                    </div>-->
+<!--                </field>-->
             </field>
         </record>
     </data>

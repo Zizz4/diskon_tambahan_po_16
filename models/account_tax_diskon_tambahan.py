@@ -115,7 +115,12 @@ class ModelName(models.Model):
         tax_group_vals_list = sorted(tax_group_vals_list, key=lambda x: (x['tax_group'].sequence, x['tax_group'].id))
 
         # ==== Partition the tax group values by subtotals ====
-        amount_untaxed = global_tax_details['base_amount_currency']
+        diskon_tambahan = 0.0
+        for base_line in base_lines:
+            diskon_tambahan = base_line['diskon_tambahan']
+
+        subtotal = global_tax_details['base_amount_currency']
+        amount_untaxed = subtotal - diskon_tambahan
         amount_tax = 0.0
 
         subtotal_order = {}
@@ -139,7 +144,6 @@ class ModelName(models.Model):
             })
 
         # ==== Build the final result ====
-
         subtotals = []
         for subtotal_title in sorted(subtotal_order.keys(), key=lambda k: subtotal_order[k]):
             amount_total = amount_untaxed + amount_tax
@@ -150,10 +154,7 @@ class ModelName(models.Model):
             })
             amount_tax += sum(x['tax_group_amount'] for x in groups_by_subtotal[subtotal_title])
 
-        diskon_tambahan = 0.0
-        for base_line in base_lines:
-            diskon_tambahan = base_line['diskon_tambahan']
-        amount_total = amount_untaxed + amount_tax - diskon_tambahan
+        amount_total = amount_untaxed + amount_tax
 
         display_tax_base = (len(global_tax_details['tax_details']) == 1 and currency.compare_amounts(
             tax_group_vals_list[0]['base_amount'], amount_untaxed) != 0) \
@@ -167,5 +168,6 @@ class ModelName(models.Model):
             'groups_by_subtotal': groups_by_subtotal,
             'subtotals': subtotals,
             'subtotals_order': sorted(subtotal_order.keys(), key=lambda k: subtotal_order[k]),
-            'display_tax_base': display_tax_base
+            'display_tax_base': display_tax_base,
+            'subtotal': formatLang(self.env, subtotal, currency_obj=currency)
         }
