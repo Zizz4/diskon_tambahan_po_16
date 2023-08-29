@@ -39,7 +39,7 @@ class PurchaseOrder(models.Model):
     _sql_constraints = [
         (
             "diskon_tambahan_limit",
-            "CHECK (diskon_tambahan >= tax_totals)",
+            "CHECK (diskon_tambahan <= amount_total)",
             "Diskon tambahan tidak bisa lebih besar dari total harga",
         )
     ]
